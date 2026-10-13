@@ -1,11 +1,11 @@
 ﻿# Mini Core: Sistema de ventas y comisiones
 
-Adaptación académica para la **Tarea 4: Aplicación Ejercicio MVC**, basada en un proyecto de semestres anteriores de la Universidad de las Américas (UDLA).
+Proyecto para la **Tarea 4: Aplicación Ejercicio MVC** de la Universidad de las Américas (UDLA), desarrollado a partir del ejercicio de un semestre anterior.
 
 **Estudiante:** Miguel Punin ([MiguelPunin](https://github.com/MiguelPunin)).
 **Asignatura:** Desarrollo Web, semestre 7.
 
-La aplicación registra ventas y calcula comisiones por vendedor dentro de un rango de fechas. Esta adaptación incluye una interfaz clara con fondo crema, tarjetas blancas y acentos verdes, configuración de Render y PostgreSQL en la nube.
+Sistema de registro de ventas y cálculo de comisiones. Permite consultar cuánto vendió cada vendedor y qué comisión le corresponde en un período determinado. El frontend está hecho con React y el backend con Django REST Framework; ambos están desplegados en Render con una base de datos PostgreSQL.
 
 ## Aplicación desplegada
 
@@ -15,7 +15,7 @@ La aplicación registra ventas y calcula comisiones por vendedor dentro de un ra
 | Backend | [Abrir API](https://mini-core-backend-x00b.onrender.com/api/) |
 | Repositorio | [mini-core-comisiones](https://github.com/MiguelPunin/mini-core-comisiones) |
 
-El backend define `/api/` y `/admin/`. Entrar en `/` o `/docs` devuelve 404. El servicio gratuito puede tardar en responder después de un período de inactividad.
+Para usar el sistema, abre el enlace del frontend. El enlace del backend permite consultar los endpoints de la API.
 
 ## Funcionalidades
 
@@ -35,7 +35,7 @@ La API también permite administrar vendedores y reglas y actualizar ventas; est
 | Datos | SQLite local / PostgreSQL en Render | Persistencia |
 | Despliegue | Render, Gunicorn, WhiteNoise | Servicios y estáticos de Django |
 
-En relación con MVC, los modelos de Django representan los datos y contienen el cálculo de comisión. Las vistas de `views.py` manejan las peticiones y generan JSON. React presenta los resultados. Aunque Django suele describirse mediante MVT, esta aplicación utiliza React para su interfaz en lugar de templates de Django.
+El proyecto separa los datos, el manejo de peticiones y la presentación. En Django, `models.py` define las tablas y el cálculo de comisiones, mientras que `views.py` recibe las peticiones y devuelve JSON. React consume esas respuestas y muestra la interfaz. Django utiliza la organización MVT; en este proyecto, la presentación de la aplicación se resuelve con React.
 
 ## Archivos principales
 
@@ -56,7 +56,7 @@ En relación con MVC, los modelos de Django representan los datos y contienen el
 
 ## Ejecución local en Windows (PowerShell)
 
-Requisitos: Python 3.11 y Node.js con npm (Node 22 recomendado). Mantener dos terminales abiertas.
+Necesitas Python 3.11 y Node.js con npm. Ejecuta el backend y el frontend en terminales separadas.
 
 ### Backend
 
@@ -71,7 +71,7 @@ cd backend
 ..\.venv\Scripts\python.exe manage.py runserver
 ```
 
-El entorno `.venv` queda en la raíz; estos comandos no requieren activarlo. API local: http://127.0.0.1:8000/api/.
+Estos comandos crean el entorno `.venv` en la raíz y utilizan su ejecutable directamente, sin necesidad de activarlo. La API queda disponible en http://127.0.0.1:8000/api/.
 
 `seed_demo` carga cuatro vendedores, cuatro reglas y cinco ventas únicamente si las tablas de vendedores, reglas y ventas están vacías. Las ventas de ejemplo son de mayo y junio de 2025: seleccionar ese período para verlas en los reportes.
 
@@ -85,7 +85,20 @@ npm ci
 npm run dev -- --host 127.0.0.1
 ```
 
-Abrir http://127.0.0.1:3000/. Axios apunta por defecto a http://127.0.0.1:8000. Para generar la versión de producción, ejecutar `npm run build` desde `frontend`.
+Abre http://127.0.0.1:3000/. El frontend se conecta por defecto al backend en http://127.0.0.1:8000.
+
+Para compilar la aplicación, ejecuta desde `frontend`:
+
+```powershell
+npm run build
+```
+
+### Prueba rápida
+
+1. Selecciona un vendedor y registra una venta de $900.
+2. Comprueba que la tabla muestre una comisión de $90 (10%).
+3. Abre la pestaña de comisiones y elige un rango que incluya la fecha de la venta.
+4. Calcula el reporte y despliega el detalle del vendedor.
 
 ## Cálculo de comisiones
 
@@ -93,7 +106,7 @@ Abrir http://127.0.0.1:3000/. Axios apunta por defecto a http://127.0.0.1:8000. 
 
 Una venta de $900 aplica la regla de 10% desde $800 y genera $90. Los reportes recalculan con las reglas actuales. Existe el modelo `ComisionCalculada`, pero el endpoint de cálculo no guarda automáticamente un historial en él.
 
-**Datos heredados pendientes de revisión:** el fixture contiene 8% desde $500, 6% desde $600, 10% desde $800 y `1.1500` desde $1000. Este último valor representa **115%, no 15%**. Si el enunciado exige 15%, debe corregirse también en la base desplegada: editar el fixture no actualiza una base ya poblada.
+**Nota sobre los ejemplos:** el archivo inicial contiene una regla con porcentaje `1.1500`, equivalente a 115%. Para representar 15%, el valor debe ser `0.1500`. Si la base ya tiene datos, cambiar el archivo no actualiza esa regla automáticamente.
 
 ## API principal
 
@@ -163,13 +176,7 @@ Variables del frontend:
 
 Las URLs se escriben sin `/` al final. `VITE_API_URL` no incluye `/api` porque Axios lo añade. Cambiar esta variable requiere recompilar el frontend; cambiar CORS requiere redesplegar el backend.
 
-La base gratuita creada para esta entrega indica vencimiento el **12 de noviembre de 2026**. La disponibilidad de la demo depende de mantener activa la base.
-
-## Alcance y créditos
-
-Proyecto académico de demostración. La API permite operaciones sin autenticación: utilizar datos de prueba. Los logs de despliegue reportaron avisos de vulnerabilidades en dependencias npm; su revisión sigue pendiente.
+## Créditos
 
 - **Adaptación, ajustes visuales y despliegue:** Miguel Punin, UDLA.
 - **Proyecto base de un semestre anterior:** [Mattair39/Proyecto-Mini-Core-MVC](https://github.com/Mattair39/Proyecto-Mini-Core-MVC).
-
-Se conserva la atribución al proyecto base. Este repositorio no incluye un archivo `LICENSE`, por lo que esta documentación no declara una licencia MIT.
