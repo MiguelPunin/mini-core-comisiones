@@ -17,6 +17,10 @@ Sistema de registro de ventas y cálculo de comisiones. Permite consultar cuánt
 
 Para usar el sistema, abre el enlace del frontend. El enlace del backend permite consultar los endpoints de la API.
 
+## Video de presentación
+
+[Ver la explicación del proyecto y su despliegue en Render](https://youtu.be/pOxcq_3OZtQ).
+
 ## Funcionalidades
 
 - Crear, listar y eliminar ventas desde la interfaz.
